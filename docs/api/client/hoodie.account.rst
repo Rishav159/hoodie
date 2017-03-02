@@ -15,55 +15,28 @@ It persists session information in localStorage (or your own store API) and
 provides front-end friendly APIs for the authentication-related operations as 
 mentioned above.
 
-There is also an `admin-specific account client 
-<https://github.com/hoodiehq/hoodie-account-client/blob/master/admin>`_.
-
 Example
 -------
 
 .. code:: js
 
-    // Account loaded via <script> or require('@hoodie/account-client')
-    var account = new Account('https://example.com/account/api')
 
-    if (account.isSignedIn()) {
-    renderWelcome(account)
+
+
+    if (hoodie.account.isSignedIn()) {
+    renderWelcome(hoodie.account)
     }
 
-    account.on('signout', redirectToHome)
+    hoodie.account.on('signout', redirectToHome)
 
-Constructor
------------
 
-.. code:: js
 
-    new Account(options)
-
-table
-
-Returns ``account`` API.
-
-Example
-
-.. code:: js
-
-    new Account({
-        url: '/api',
-        id: 'user123',
-        cacheKey: 'myapp.session',
-        validate: function (options) {
-            if (options.username.length < 3) {
-            throw new Error('Username must have at least 3 characters')
-            }
-        }
-    })
-
-account.ready
+hoodie.account.ready
 -------------
 
 `Read-only`. Promise that resolves once the account instance loaded its current state from the store.
 
-account.id
+hoodie.account.id
 ----------
 
 `Read-only`. Returns the account id. Cannot be accessed until the `account.ready <https://github.com/hoodiehq/hoodie-account-client#accountready>`_ promise resolved.
@@ -71,7 +44,7 @@ account.id
 account.username
 ----------------
 
-`Read-only`. Returns the username if signed in, otherwise ``undefined``. Cannot be accessed until the `account.ready <https://github.com/hoodiehq/hoodie-account-client#accountready>`_ promise resolved.
+`Read-only`. Returns the username if signed in, otherwise ``undefined``. Cannot be accessed until the `hoodie.account.ready <https://github.com/hoodiehq/hoodie-account-client#accountready>`_ promise resolved.
 
 account.validate
 ----------------
@@ -80,7 +53,7 @@ Calls the function passed into the Constructor. Returns a Promise that resolves 
 
 .. code:: js
 
-    account.validate(options)
+    hoodie.account.validate(options)
 
 table
 
@@ -102,59 +75,50 @@ Example
 
 .. code:: js
 
-    var account = new Account({
-    url: '/api',
-    cacheKey: 'app.session',
-    validate: function (options) {
-        if (options.password.length < 8) {
-        throw new Error('password should contain at least 8 characters')
-        }
-    }
-    })
 
-    account.validate({
-    username: 'DocsChicken',
-    password: 'secret'
+    hoodie.account.validate({
+        username: 'DocsChicken',
+        password: 'secret'
     })
 
     .then(function () {
-    console.log('Successfully validated!')
+        console.log('Successfully validated!')
     })
 
     .catch(function (error) {
-    console.log(error) // should be an error about the password being too short
+        console.log(error) // should be an error about the password being too short
     })
 
-account.isSignedIn
+hoodie.account.isSignedIn
 ------------------
 
 Returns ``true`` if user is currently signed in, otherwise ``false``. 
-Cannot be accessed until the `account.ready <https://github.com/hoodiehq/hoodie-account-client#accountready>`_ promise resolved.
+Cannot be accessed until the `hoodie.account.ready <https://github.com/hoodiehq/hoodie-account-client#accountready>`_ promise resolved.
 
 .. code:: js
 
-    account.isSignedIn()
+    hoodie.account.isSignedIn()
 
-account.hasInvalidSession
+hoodie.account.hasInvalidSession
 -------------------------
 
-Checks ``account.session.invalid property``. Returns ``true`` 
+Checks ``hoodie.account.session.invalid property``. Returns ``true`` 
 if user has invalid session, otherwise ``undefined``. 
-Cannot be accessed until the account.ready promise resolved.
+Cannot be accessed until the hoodie.account.ready promise resolved.
 
 .. code:: js
 
-    account.hasInvalidSession()
+    hoodie.account.hasInvalidSession()
 
-account.signUp
+hoodie.account.signUp
 --------------
 
 Creates a new user account on the Hoodie server. 
-Does `not` sign in the user automatically, `account.signIn <https://github.com/hoodiehq/hoodie-account-client#accountsignin>`_ must be called separately.
+Does `not` sign in the user automatically, `hoodie.account.signIn <https://github.com/hoodiehq/hoodie-account-client#accountsignin>`_ must be called separately.
 
 .. code:: js
 
-    account.signUp(accountProperties)
+    hoodie.account.signUp(accountProperties)
 
 +--------------------------------+---------+----------+
 | Argument                       | Type    | Required |
@@ -166,7 +130,7 @@ Does `not` sign in the user automatically, `account.signIn <https://github.com/h
 
 Resolves with ``accountProperties``:
 
-.. code:: json
+.. code:: js
 
     {
         "id": "account123",
@@ -191,7 +155,7 @@ Example
 
 .. code:: js
 
-    account.signUp({
+    hoodie.account.signUp({
         username: 'pat',
         password: 'secret'
     }).then(function (accountProperties) {
@@ -200,18 +164,18 @@ Example
         alert(error)
     })
 
-account.signOut
+hoodie.account.signOut
 ---------------
 
 Deletes the user’s session
 
 .. code:: js
 
-    account.signOut()
+    hoodie.account.signOut()
 
-Resolves with ``sessionProperties`` like `account.signin <https://github.com/hoodiehq/hoodie-account-client#accountsignin>`_, but without the session id:
+Resolves with ``sessionProperties`` like `hoodie.account.signin <https://github.com/hoodiehq/hoodie-account-client#accountsignin>`_, but without the session id:
 
-.. code:: json
+.. code:: js
 
     {
         "account": {
@@ -235,24 +199,24 @@ Example
 
 .. code:: js
 
-    account.signOut().then(function (sessionProperties) {
-        alert('Bye, ' + sessionProperties.account.username)
+    hoodie.account.signOut().then(function (sessionProperties) {
+        alert('Bye, ' + sessionProperties.hoodie.account.username)
     }).catch(function (error) {
         alert(error)
     })
 
-account.destroy
+hoodie.account.destroy
 ---------------
 
 Destroys the account of the currently signed in user.
 
 .. code:: js
 
-    account.destroy()
+    hoodie.account.destroy()
 
-Resolves with ``sessionProperties`` like `account.signin <https://github.com/hoodiehq/hoodie-account-client#accountsignin>`_, but without the session id:
+Resolves with ``sessionProperties`` like `hoodie.account.signin <https://github.com/hoodiehq/hoodie-account-client#accountsignin>`_, but without the session id:
 
-.. code:: json
+.. code:: js
 
     {
         "account": {
@@ -278,20 +242,20 @@ Example
 
 .. code::
 
-    account.destroy().then(function (sessionProperties) {
+    hoodie.account.destroy().then(function (sessionProperties) {
         alert('Bye, ' + sessionProperties.account.username)
     }).catch(function (error) {
         alert(error)
     })
 
-account.get
+hoodie.account.get
 -----------
 
-Returns account properties from local cache. Cannot be accessed until the `account.ready <https://github.com/hoodiehq/hoodie-account-client#accountready>`_ promise resolved.
+Returns account properties from local cache. Cannot be accessed until the `hoodie.account.ready <https://github.com/hoodiehq/hoodie-account-client#accountready>`_ promise resolved.
 
 .. code:: js
 
-    account.get(properties)
+    hoodie.account.get(properties)
 
 +-----------------+------------------------------------+---------------------------------------------------------------------------------------------------------+------------+
 | Argument        | Type                               | Description                                                                                             | Required   |
@@ -305,21 +269,21 @@ Examples
 
 .. code:: js
 
-    var properties = account.get()
+    var properties = hoodie.account.get()
     alert('You signed up at ' + properties.createdAt)
-    var createdAt = account.get('createdAt')
+    var createdAt = hoodie.account.get('createdAt')
     alert('You signed up at ' + createdAt)
-    var properties = account.get(['createdAt', 'updatedAt'])
+    var properties = hoodie.account.get(['createdAt', 'updatedAt'])
     alert('You signed up at ' + properties.createdAt)
 
-account.fetch
+achoodie.accountcount.fetch
 -------------
 
 Fetches account properties from server.
 
 .. code:: js
 
-    account.fetch(properties)
+    hoodie.account.fetch(properties)
 
 +----------------+----------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+-------------+
 | Argument       | Type                       | Description                                                                                                                                                                  | Required    |
@@ -329,7 +293,7 @@ Fetches account properties from server.
 
 Resolves with ``accountProperties``:
 
-.. code:: json
+.. code:: js
 
     {
         "id": "account123",
@@ -350,24 +314,24 @@ Examples
 
 .. code:: js
 
-    account.fetch().then(function (properties) {
+    hoodie.account.fetch().then(function (properties) {
         alert('You signed up at ' + properties.createdAt)
     })
-    account.fetch('createdAt').then(function (createdAt) {
+    hoodie.account.fetch('createdAt').then(function (createdAt) {
         alert('You signed up at ' + createdAt)
     })
-    account.fetch(['createdAt', 'updatedAt']).then(function (properties) {
+    hoodie.account.fetch(['createdAt', 'updatedAt']).then(function (properties) {
         alert('You signed up at ' + properties.createdAt)
     })
 
-account.update
+hoodie.account.update
 --------------
 
 Update account properties on server and local cache
 
 .. code:: js
 
-    account.update(changedProperties)
+    hoodie.account.update(changedProperties)
 
 +-----------------------+-----------+--------------------------------------------------------------------------------+----------+
 | Argument              | Type      | Description                                                                    | Required |
@@ -377,7 +341,7 @@ Update account properties on server and local cache
 
 Resolves with accountProperties:
 
-.. code:: json
+.. code:: js
 
     {
         "id": "account123",
@@ -393,15 +357,15 @@ Rejects with:
 +--------------------------+----------------------------------------+
 | ``InvalidError``         | Custom validation error                |
 +--------------------------+----------------------------------------+
-| ``ConflictError``        | Username **<username>** already exists |
+| ``ConflictError``        | Username **<username>** already exists | 
 +--------------------------+----------------------------------------+
 | ``ConnectionError``      | Could not connect to server            |
 +--------------------------+----------------------------------------+
 
 Example
 
-.. code:: json
+.. code:: js
 
-    account.update({username: 'treetrunks'}).then(function (properties) {
+    hoodie.account.update({username: 'treetrunks'}).then(function (properties) {
         alert('You are now known as ' + properties.username)
     })

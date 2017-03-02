@@ -8,7 +8,6 @@ Hoodie provides two APIs
    The Hoodie Client API is what you load into your web application using a
    script tag. It connects to your Hoodie Backend's routes
 
-|
 
 2. The Hoodie Server API
 
