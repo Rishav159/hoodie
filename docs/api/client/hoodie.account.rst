@@ -20,9 +20,6 @@ Example
 
 .. code:: js
 
-
-
-
     if (hoodie.account.isSignedIn()) {
     renderWelcome(hoodie.account)
     }
@@ -276,7 +273,7 @@ Examples
     var properties = hoodie.account.get(['createdAt', 'updatedAt'])
     alert('You signed up at ' + properties.createdAt)
 
-hoodie.accountcount.fetch
+hoodie.account.fetch
 -------------------------
 
 Fetches account properties from server.
