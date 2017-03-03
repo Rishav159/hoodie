@@ -32,22 +32,22 @@ Example
 
 
 hoodie.account.ready
--------------
+--------------------
 
 `Read-only`. Promise that resolves once the account instance loaded its current state from the store.
 
 hoodie.account.id
-----------
+-----------------
 
 `Read-only`. Returns the account id. Cannot be accessed until the `account.ready <https://github.com/hoodiehq/hoodie-account-client#accountready>`_ promise resolved.
 
-account.username
-----------------
+hoodie.account.username
+-----------------------
 
 `Read-only`. Returns the username if signed in, otherwise ``undefined``. Cannot be accessed until the `hoodie.account.ready <https://github.com/hoodiehq/hoodie-account-client#accountready>`_ promise resolved.
 
-account.validate
-----------------
+hoodie.account.validate
+-----------------------
 
 Calls the function passed into the Constructor. Returns a Promise that resolves to ``true`` by default
 
@@ -90,7 +90,7 @@ Example
     })
 
 hoodie.account.isSignedIn
-------------------
+-------------------------
 
 Returns ``true`` if user is currently signed in, otherwise ``false``. 
 Cannot be accessed until the `hoodie.account.ready <https://github.com/hoodiehq/hoodie-account-client#accountready>`_ promise resolved.
@@ -100,7 +100,7 @@ Cannot be accessed until the `hoodie.account.ready <https://github.com/hoodiehq/
     hoodie.account.isSignedIn()
 
 hoodie.account.hasInvalidSession
--------------------------
+--------------------------------
 
 Checks ``hoodie.account.session.invalid property``. Returns ``true`` 
 if user has invalid session, otherwise ``undefined``. 
@@ -111,7 +111,7 @@ Cannot be accessed until the hoodie.account.ready promise resolved.
     hoodie.account.hasInvalidSession()
 
 hoodie.account.signUp
---------------
+---------------------
 
 Creates a new user account on the Hoodie server. 
 Does `not` sign in the user automatically, `hoodie.account.signIn <https://github.com/hoodiehq/hoodie-account-client#accountsignin>`_ must be called separately.
@@ -165,7 +165,7 @@ Example
     })
 
 hoodie.account.signOut
----------------
+----------------------
 
 Deletes the user’s session
 
@@ -206,7 +206,7 @@ Example
     })
 
 hoodie.account.destroy
----------------
+----------------------
 
 Destroys the account of the currently signed in user.
 
@@ -249,7 +249,7 @@ Example
     })
 
 hoodie.account.get
------------
+------------------
 
 Returns account properties from local cache. Cannot be accessed until the `hoodie.account.ready <https://github.com/hoodiehq/hoodie-account-client#accountready>`_ promise resolved.
 
@@ -276,8 +276,8 @@ Examples
     var properties = hoodie.account.get(['createdAt', 'updatedAt'])
     alert('You signed up at ' + properties.createdAt)
 
-achoodie.accountcount.fetch
--------------
+hoodie.accountcount.fetch
+-------------------------
 
 Fetches account properties from server.
 
@@ -325,7 +325,7 @@ Examples
     })
 
 hoodie.account.update
---------------
+---------------------
 
 Update account properties on server and local cache
 
@@ -369,3 +369,4 @@ Example
     hoodie.account.update({username: 'treetrunks'}).then(function (properties) {
         alert('You are now known as ' + properties.username)
     })
+
