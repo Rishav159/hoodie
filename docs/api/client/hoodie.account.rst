@@ -370,3 +370,311 @@ Example
         alert('You are now known as ' + properties.username)
     })
 
+account.profile.get
+-------------------
+
+Returns profile properties from local cache. Cannot be accessed until the `account.ready <https://github.com/hoodiehq/hoodie-account-client#accountready>`_ promise resolved.
+
+.. code:: js
+
+    account.profile.get(properties)
+
++----------------+-----------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------+
+| Argument       | Type                        | Description                                                                                                                                                                   | Required   |
++================+=============================+===============================================================================================================================================================================+============+       
+| ``properties`` | String or Array of strings  | When String, only this property gets returned. If array of strings, only passed properties get returned. Property names can have `.` separators to return nested properties.  | No         |
++----------------+-----------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------+
+
+Returns object with profile properties, falls back to empty object ``{}``. Returns ``undefined`` if not signed in.
+
+Examples
+
+.. code:: js
+
+    var properties = account.profile.get()
+    alert('Hey there ' + properties.fullname)
+    var fullname = account.profile.get('fullname')
+    alert('Hey there ' + fullname)
+    var properties = account.profile.get(['fullname', 'address.city'])
+    alert('Hey there ' + properties.fullname + '. How is ' + properties.address.city + '?')
+
+account.profile.fetch
+---------------------
+
+Fetches profile properties from server.
+
+.. code:: js
+
+    account.profile.fetch(options)
+
++----------------+----------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------+
+| Argument       | Type                       | Description                                                                                                                                                                  | Required |
++================+============================+==============================================================================================================================================================================+==========+
+| ``properties`` | String or Array of strings | When String, only this property gets returned. If array of strings, only passed properties get returned. Property names can have '.' separators to return nested properties. | No       |
++----------------+----------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------+
+
+Resolves with ``profileProperties``:
+
+.. code:: js
+
+    {
+        "id": "account123-profile",
+        "fullname": "Dr Pat Hook",
+        "address": {
+            "city": "Berlin",
+            "street": "Adalberststraße 4a"
+        }
+    }
+
+Rejects with:
+
++--------------------------+--------------------------------+
+| ``UnauthenticatedError`` | Session is invalid             |
++--------------------------+--------------------------------+
+| ``ConnectionError``      | Could not connect to server    |   
++--------------------------+--------------------------------+
+
+Examples
+
+.. code:: js
+
+    account.fetch().then(function (properties) {
+        alert('Hey there ' + properties.fullname)
+    })
+    account.fetch('fullname').then(function (fullname) {
+        alert('Hey there ' + fullname)
+    })
+    account.fetch(['fullname', 'address.city']).then(function (properties) {
+        alert('Hey there ' + properties.fullname + '. How is ' + properties.address.city + '?')
+    })
+
+account.profile.update
+----------------------
+
+Update profile properties on server and local cache
+
+.. code:: js
+
+    account.profile.update(changedProperties)
+
++-----------------------+--------+--------------------------------------------------------------------------------+----------+
+| Argument              | Type   | Description                                                                    | Required |
++=======================+========+================================================================================+==========+
+| ``changedProperties`` | Object | Object of properties & values that changed. Other properties remain unchanged. | No       |
++-----------------------+--------+--------------------------------------------------------------------------------+----------+
+
+Resolves with ``profileProperties``:
+
+.. code:: js
+
+    {
+        "id": "account123-profile",
+        "fullname": "Dr Pat Hook",
+        "address": {
+            "city": "Berlin",
+            "street": "Adalberststraße 4a"
+        }
+    }
+
+Rejects with:
+
++--------------------------+------------------------------------+
+| ``UnauthenticatedError`` | Session is invalid                 |
++--------------------------+------------------------------------+
+| ``InvalidError``         | `Custom validation error`          |
++--------------------------+------------------------------------+
+| ``ConnectionError``      | Could not connect to server        |
++--------------------------+------------------------------------+
+
+Example
+
+.. code:: js
+
+    account.profile.update({fullname: 'Prof Pat Hook'}).then(function (properties) {
+        alert('Congratulations, ' + properties.fullname)
+    })
+
+account.request
+---------------
+
+Sends a custom request to the server, for things like password resets, account upgrades, etc.
+
+.. code:: js
+
+    account.request(properties)
+
++---------------------+--------+------------------------------------------------+----------+
+| Argument            | Type   | Description                                    | Required |
++=====================+========+================================================+==========+
+| ``properties.type`` | String | Name of the request type, e.g. "passwordreset" | Yes      |
++---------------------+--------+------------------------------------------------+----------+
+| ``properties``      | Object | Additional properties for the request          | No       |
++---------------------+--------+------------------------------------------------+----------+
+
+Resolves with ``requestProperties``:
+
+.. code:: js
+
+    {
+        "id": "request123",
+        "type": "passwordreset",
+        "contact": "pat@example.com",
+        "createdAt": "2016-01-01T00:00.000Z",
+        "updatedAt": "2016-01-01T00:00.000Z"
+    }
+
+Rejects with:
+
++---------------------+---------------------------------------+
+| ``ConnectionError`` | Could not connect to server           |
++---------------------+---------------------------------------+
+| ``NotFoundError``   | Handler missing for "passwordreset"   |
++---------------------+---------------------------------------+
+| ``InvalidError``    | `Custom validation error`             |
++---------------------+---------------------------------------+
+
+Example
+
+.. code:: js
+
+    account.request({type: 'passwordreset', contact: 'pat@example.com'}).then(function (properties) {
+        alert('A password reset link was sent to ' + properties.contact)
+    })
+
+account.on
+----------
+
+.. code:: js
+
+    account.on(event, handler)
+
+Example
+
+.. code:: js
+
+    account.on('signin', function (accountProperties) {
+        alert('Hello there, ' + accountProperties.username)
+    })
+
+account.one
+-----------
+
+Call function once at given account event.
+
+.. code:: js
+
+    account.one(event, handler)
+
+Example
+
+.. code:: js
+
+    account.one('signin', function (accountProperties) {
+        alert('Hello there, ' + accountProperties.username)
+    })
+
+account.off
+-----------
+
+Removes event handler that has been added before
+
+.. code:: js
+
+    account.off(event, handler)
+
+Example
+
+.. code:: js
+
+    account.off('singin', showNotification)
+
+Events
+------
+
++--------------------+---------------------------------------------------------------------------------+--------------------------------------------------+
+| Event              | Description                                                                     | Arguments                                        |
++====================+=================================================================================+==================================================+
+| ``signup``         | New user account created successfully                                           | ``accountProperties`` with ``.session property`` |
++--------------------+---------------------------------------------------------------------------------+--------------------------------------------------+
+| ``signin``         | Successfully signed in to an account                                            | ``accountProperties`` with ``.session property`` |
++--------------------+---------------------------------------------------------------------------------+--------------------------------------------------+
+| ``signout``        | Successfully signed out                                                         | ``accountProperties`` with ``.session property`` |
++--------------------+---------------------------------------------------------------------------------+--------------------------------------------------+
+| ``passwordreset``  | Email with password reset token sent                                            |                                                  |	
++--------------------+---------------------------------------------------------------------------------+--------------------------------------------------+
+| ``unauthenticate`` | Server responded with "unauthenticated" when checking session                   |                                                  |	
++--------------------+---------------------------------------------------------------------------------+--------------------------------------------------+
+| ``reauthenticate`` | Successfully signed in with the same username (useful when session has expired) | ``accountProperties`` with ``.session property`` |
++--------------------+---------------------------------------------------------------------------------+--------------------------------------------------+
+| ``update``         | Successfully updated an account's properties                                    | ``accountProperties`` with ``.session property`` |
++--------------------+---------------------------------------------------------------------------------+--------------------------------------------------+
+
+Hooks
+-----
+
+.. code:: js
+
+    // clear user’s local store signin and after signout
+    account.hook.before('signin', function (options) {
+        return localUserStore.clear()
+    })
+    account.hook.after('signout', function (options) {
+        return localUserStore.clear()
+    })
+
++-------------+------------------------------------------------------------------+
+| Hook        | Arguments                                                        |
++=============+==================================================================+
+| ``signin``  | ``options`` as they were passed into ``account.signIn(options)`` |
++-------------+------------------------------------------------------------------+
+| ``signout`` | ``{}``                                                           |
++-------------+------------------------------------------------------------------+
+
+See `before-after-hook <https://www.npmjs.com/package/before-after-hook>`_ for more information.
+
+Requests
+--------
+
+Hoodie comes with a list of built-in account requests, which can be disabled, overwritten or extended in `hoodie-account-server <https://github.com/hoodiehq/hoodie-account-server/tree/master/plugin#optionsrequests>`_.
+
+When a request succeeds, an event with the same name as the request type gets emitted. For example, ``account.request({type: 'passwordreset', contact: 'pat@example.com')`` triggers a ``passwordreset`` event, with the ``requestProperties`` passed as argument.
+
++--------------------+----------------------------------------+
+| ``passwordreset``  | Request a password reset token         |
++--------------------+----------------------------------------+
+
+Testing
+-------
+
+Local setup
+
+.. code::
+
+    git clone https://github.com/hoodiehq/hoodie-account-client.git
+    cd hoodie-account-client
+
+In Node.js
+
+Run all tests and validate JavaScript Code Style using `standard <https://www.npmjs.com/package/standard>`_
+
+.. code::
+
+    npm test
+
+To run only the tests
+
+.. code::
+
+    npm run test:node
+
+To test hoodie-account-client in a browser you can link it into `hoodie-account <https://github.com/hoodiehq/hoodie-account>`_, which provides a dev-server:
+
+.. code::
+
+    git clone https://github.com/hoodiehq/hoodie-account.git
+    cd hoodie-account
+    npm install
+    npm link /path/to/hoodie-account-client
+    npm start
+
+hoodie-account bundles hoodie-account-client on ``npm start``, so you need to restart hoodie-account to see your changes.
