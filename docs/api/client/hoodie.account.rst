@@ -27,6 +27,7 @@ Example
     hoodie.account.on('signout', redirectToHome)
 
 
+.. _label-hoodie-account-ready:
 
 hoodie.account.ready
 --------------------
@@ -36,12 +37,12 @@ hoodie.account.ready
 hoodie.account.id
 -----------------
 
-`Read-only`. Returns the account id. Cannot be accessed until the `account.ready <https://github.com/hoodiehq/hoodie-account-client#accountready>`_ promise resolved.
+`Read-only`. Returns the account id. Cannot be accessed until the :ref:`label-hoodie-account-ready` promise resolved.
 
 hoodie.account.username
 -----------------------
 
-`Read-only`. Returns the username if signed in, otherwise ``undefined``. Cannot be accessed until the `hoodie.account.ready <https://github.com/hoodiehq/hoodie-account-client#accountready>`_ promise resolved.
+`Read-only`. Returns the username if signed in, otherwise ``undefined``. Cannot be accessed until the :ref:`label-hoodie-account-ready promise resolved.
 
 hoodie.account.validate
 -----------------------
@@ -51,8 +52,6 @@ Calls the function passed into the Constructor. Returns a Promise that resolves 
 .. code:: js
 
     hoodie.account.validate(options)
-
-table
 
 +----------------------+-------------+-------------+
 | Argument             | Type        | Required    |
@@ -72,7 +71,6 @@ Example
 
 .. code:: js
 
-
     hoodie.account.validate({
         username: 'DocsChicken',
         password: 'secret'
@@ -90,7 +88,7 @@ hoodie.account.isSignedIn
 -------------------------
 
 Returns ``true`` if user is currently signed in, otherwise ``false``. 
-Cannot be accessed until the `hoodie.account.ready <https://github.com/hoodiehq/hoodie-account-client#accountready>`_ promise resolved.
+Cannot be accessed until the :ref:`label-hoodie-account-ready promise resolved.
 
 .. code:: js
 
@@ -101,7 +99,7 @@ hoodie.account.hasInvalidSession
 
 Checks ``hoodie.account.session.invalid property``. Returns ``true`` 
 if user has invalid session, otherwise ``undefined``. 
-Cannot be accessed until the hoodie.account.ready promise resolved.
+Cannot be accessed until the :ref:`label-hoodie-account-ready promise resolved.
 
 .. code:: js
 
@@ -111,7 +109,7 @@ hoodie.account.signUp
 ---------------------
 
 Creates a new user account on the Hoodie server. 
-Does `not` sign in the user automatically, `hoodie.account.signIn <https://github.com/hoodiehq/hoodie-account-client#accountsignin>`_ must be called separately.
+Does `not` sign in the user automatically, :ref:`label-hoodie-account-signIn` must be called separately.
 
 .. code:: js
 
@@ -161,6 +159,65 @@ Example
         alert(error)
     })
 
+
+.. _label-hoodie-account-signIn:
+
+hoodie.account.signIn
+---------------------
+
+Creates a user session
+
+.. code::
+
+    hoodie.account.signIn(options)
+
++----------------------+--------+-------------+----------+
+| Argument             | Type   | Description | Required |
++======================+========+=============+==========+
+| ``options.username`` | String | -           | Yes      |
++----------------------+--------+-------------+----------+
+| ``options.password`` | String | -           | Yes      |
++----------------------+--------+-------------+----------+
+
+Resolves with ``accountProperties``:
+
+.. code::
+
+    {
+        "id": "account123",
+        "username": "pat",
+        "createdAt": "2016-01-01T00:00.000Z",
+        "updatedAt": "2016-01-02T00:00.000Z",
+        "profile": {
+            "fullname": "Dr. Pat Hook"
+        }
+    }
+
+Rejects with:
+
++-----------------------+-------------------------------------------------------------------------------------------------------+
+| ``UnconfirmedError``  | Account has not been confirmed yet                                                                    |
++-----------------------+-------------------------------------------------------------------------------------------------------+
+| ``UnauthorizedError`` | Invalid Credentials                                                                                   |
++-----------------------+-------------------------------------------------------------------------------------------------------+
+| ``Error``             | `A custom error set on the account object, e.g. the account could be blocked due to missing payments` |
++-----------------------+-------------------------------------------------------------------------------------------------------+
+| ``ConnectionError``   | Could not connect to server                                                                           |
++-----------------------+-------------------------------------------------------------------------------------------------------+
+
+Example
+
+.. code::
+
+    hoodie.account.signIn({
+        username: 'pat',
+        password: 'secret'
+    }).then(function (sessionProperties) {
+        alert('Ohaj, ' + sessionProperties.account.username)
+    }).catch(function (error) {
+        alert(error)
+    })
+
 hoodie.account.signOut
 ----------------------
 
@@ -170,7 +227,7 @@ Deletes the user’s session
 
     hoodie.account.signOut()
 
-Resolves with ``sessionProperties`` like `hoodie.account.signin <https://github.com/hoodiehq/hoodie-account-client#accountsignin>`_, but without the session id:
+Resolves with ``sessionProperties`` like :ref:`label-hoodie-account-signIn`, but without the session id:
 
 .. code:: js
 
@@ -211,7 +268,7 @@ Destroys the account of the currently signed in user.
 
     hoodie.account.destroy()
 
-Resolves with ``sessionProperties`` like `hoodie.account.signin <https://github.com/hoodiehq/hoodie-account-client#accountsignin>`_, but without the session id:
+Resolves with ``sessionProperties`` like :ref:`label-hoodie-account-signIn`, but without the session id:
 
 .. code:: js
 
@@ -248,7 +305,7 @@ Example
 hoodie.account.get
 ------------------
 
-Returns account properties from local cache. Cannot be accessed until the `hoodie.account.ready <https://github.com/hoodiehq/hoodie-account-client#accountready>`_ promise resolved.
+Returns account properties from local cache. Cannot be accessed until the :ref:`label-hoodie-account-ready` promise resolved.
 
 .. code:: js
 
@@ -370,7 +427,7 @@ Example
 account.profile.get
 -------------------
 
-Returns profile properties from local cache. Cannot be accessed until the `account.ready <https://github.com/hoodiehq/hoodie-account-client#accountready>`_ promise resolved.
+Returns profile properties from local cache. Cannot be accessed until the :ref:`label-hoodie-account-ready` promise resolved.
 
 .. code:: js
 

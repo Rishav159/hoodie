@@ -28,7 +28,6 @@ Then install two pip packages: `Sphinx <http://www.sphinx-doc.org/en/stable/>`_ 
 Change directory to ..hoodie/docs/
 
  ``make html``
-|
 
 If you are using windows powershell, note there is a little deviation.
 
